@@ -1,74 +1,105 @@
+var config = {
+  apiKey: "AIzaSyCcPFcbAjIsgXGQwE-A3AcOXkeD40qypE8",
+  authDomain: "train-times-93583.firebaseapp.com",
+  databaseURL: "https://train-times-93583.firebaseio.com",
+  storageBucket: "train-times-93583.appspot.com"
+};
 
-  // Initialize Firebase
+firebase.initializeApp(config);
 
-  // Initialize Firebase
- 
-  var config = {
-    apiKey: "AIzaSyCA-KBVwbhDCEMcuO6KtBxo-xcoluF2rf0",
-    authDomain: "train-schedule-ef52b.firebaseapp.com",
-    databaseURL: "https://train-schedule-ef52b.firebaseio.com",
-    // projectId: "train-schedule-ef52b",
-    storageBucket: "train-schedule-ef52b.appspot.com",
-    // messagingSenderId: "806440869096"
+var trainData = firebase.database();
+
+//  Populate Firebase Database
+$("#add-train-btn").on("click", function(event) {
+  // Prevent the default form submit behavior
+  event.preventDefault();
+
+  // Grabs user input
+  var trainName = $("#train-name-input")
+    .val()
+    .trim();
+  var destination = $("#destination-input")
+    .val()
+    .trim();
+  var firstTrain = $("#first-train-input")
+    .val()
+    .trim();
+  var frequency = $("#frequency-input")
+    .val()
+    .trim();
+
+  // Creates local "temporary" object for holding train data
+  var newTrain = {
+    name: trainName,
+    destination: destination,
+    firstTrain: firstTrain,
+    frequency: frequency
   };
-  firebase.initializeApp(config);
+
+  // Uploads train data to the database
+  trainData.ref().push(newTrain);
 
   
+  console.log(newTrain.name);
+  console.log(newTrain.destination);
+  console.log(newTrain.firstTrain);
+  console.log(newTrain.frequency);
 
 
-var trainBase = firebase.database();
+  alert("Train successfully added");
 
-// var name = "";
-// var dest = "";
-// var first = "";
-// var freq = "";
-
-$("#train-btn").on("click", function(event){
-  
-
-    event.preventDefault();
-    
-     var newTrain = $("#train-name-input").val().trim();
-     var destTrain = $("#dest-input").val().trim();
-    var firstTime = moment($("#first-time-input").val().trim(),"HH:mm").subtract(10, "years").format("X");
-     var freqTime = $("#freq-input").val().trim();
-    
-     var findTrain = {
-      name: newTrain,
-      destination: destTrain,
-      firstTime: firstTime,
-      frequency: freqTime
-    };
+ 
+  $("#train-name-input").val("");
+  $("#destination-input").val("");
+  $("#first-train-input").val("");
+  $("#frequency-input").val("");
+});
 
 
-      trainBase.ref().push(findTrain);
+trainData.ref().on("child_added", function(childSnapshot, prevChildKey) {
+  console.log(childSnapshot.val());
 
+ 
+  var tName = childSnapshot.val().name;
+  var tDestination = childSnapshot.val().destination;
+  var tFrequency = childSnapshot.val().frequency;
+  var tFirstTrain = childSnapshot.val().firstTrain;
 
-    
+  var timeArr = tFirstTrain.split(":");
+  var trainTime = moment()
+    .hours(timeArr[0])
+    .minutes(timeArr[1]);
+  var maxMoment = moment.max(moment(), trainTime);
+  var tMinutes;
+  var tArrival;
 
+  // If the first train is later than the current time, sent arrival to the first train time
+  if (maxMoment === trainTime) {
+    tArrival = trainTime.format("hh:mm A");
+    tMinutes = trainTime.diff(moment(), "minutes");
+  } else {
+    // Calculate the minutes until arrival using hardcore math
+    // To calculate the minutes till arrival, take the current time in unix subtract the FirstTrain time
+    // and find the modulus between the difference and the frequency.
+    var differenceTimes = moment().diff(trainTime, "minutes");
+    var tRemainder = differenceTimes % tFrequency;
+    tMinutes = tFrequency - tRemainder;
+    // To calculate the arrival time, add the tMinutes to the current time
+    tArrival = moment()
+      .add(tMinutes, "m")
+      .format("hh:mm A");
+  }
+  console.log("tMinutes:", tMinutes);
+  console.log("tArrival:", tArrival);
 
-      alert("Train successfully added");
-   
-    $("#train-name-input").val("");
-    $("#dest-input").val("");
-    $("#first-time-input").val("");
-    $("#freq-input").val("");
-  });
-  
-  trainBase.ref().on("child_added", function(childSnapshot) {
-    console.log(childSnapshot.val());
-var newTrain = childSnapshot.val().name;
-var destTrain = childSnapshot.val().destination;
-var firstTime = childSnapshot.val().time;
-var freqTime = childSnapshot.val().frequency;
-
-var remainder = moment().diff(moment.unix(firstTime),"minutes")%freqTime;
-          var minutes = freqTime - remainder;
-          var arrival = moment().add(minutes,"m").format("hh:mm A");
-          $("#trainTable > tbody").append("<tr><td>"+newTrain+"</td><td>"+destTrain+"</td><td>"+freqTime+"</td><td>"+arrival+"</td><td>"+minutes+"</td><tr>");
-
-
-// var empStartPretty = moment.unix(empStart).format("MM/DD/YYYY");
-// what the fuck does prettify mean ?
-  });
-
+  // Add each train's data into the table
+  $("#train-table > tbody").append(
+    $("<tr>").append(
+      $("<td>").text(tName),
+      $("<td>").text(tDestination),
+      $("<td>").text(tFrequency),
+      $("<td>").text(tArrival),
+      $("<td>").text(tMinutes)
+    )
+  );
+});
