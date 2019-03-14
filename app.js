@@ -9,7 +9,8 @@ firebase.initializeApp(config);
 
 var trainData = firebase.database();
 
-//  Populate Firebase Database
+// Populate Firebase Database with initial data 
+// 3. Button for adding trains
 $("#add-train-btn").on("click", function(event) {
   // Prevent the default form submit behavior
   event.preventDefault();
@@ -39,27 +40,26 @@ $("#add-train-btn").on("click", function(event) {
   // Uploads train data to the database
   trainData.ref().push(newTrain);
 
-  
+ 
   console.log(newTrain.name);
   console.log(newTrain.destination);
   console.log(newTrain.firstTrain);
   console.log(newTrain.frequency);
 
-
   alert("Train successfully added");
 
- 
+  // Clears all of the text-boxes
   $("#train-name-input").val("");
   $("#destination-input").val("");
   $("#first-train-input").val("");
   $("#frequency-input").val("");
 });
 
-
+// Create Firebase event for adding trains to the database and a row in the html when a user adds an entry
 trainData.ref().on("child_added", function(childSnapshot, prevChildKey) {
   console.log(childSnapshot.val());
 
- 
+  
   var tName = childSnapshot.val().name;
   var tDestination = childSnapshot.val().destination;
   var tFrequency = childSnapshot.val().frequency;

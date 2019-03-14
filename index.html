@@ -1,86 +1,187 @@
 <!DOCTYPE html>
-
-<html lang="en-us">
-
+<html lang="en">
 <head>
 
-  <meta charset="UTF-8">
-  <header>TrainTime</header>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Train-Scheduler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
- 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
-  <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+   
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Reset CSS -->
+    <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/reset.css"/>
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/animate.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/style.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="./assets/css/trainActivity.css"/>    
 
 </head>
-
 <body>
-  
-  <div class="container">
-    
-    <div class="jumbotron" style="background-color: #7F462C; color: white">
-      <h1 class="text-center">Anytime is Train Time</h1>
-      <h3 class="text-center">Choo Choo. Chee Chee.</h3>
-    </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <!-- Train Schedule -->
-        <div class="card">
-          <div class="card-header">
-            Current Train Schedule
-          </div>
-          <div class="card-body">
-            <table class="table table-hover" id='train-table'>
-              <thead>
-                <tr>
-                  <th>Train Name</th>
-                  <th>Destination</th>
-                  <th>Frequency (min)</th>
-                  <th>Next Arrival</th>
-                  <th>Minutes Away</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <!-- Add Train  -->
-        <div class="card mt-2">
-          <div class="card-header">
-            Add Train
-          </div>
-          <div class="card-body">
-            <!-- Entry Form -->
-            <form>
-              <div class="form-group">
-                <label for="train-name-input">Train Name</label>
-                <input type="text" class="form-control" id="train-name-input">
-              </div>
-              <div class="form-group">
-                <label for="destination-input">Destination</label>
-                <input type="text" class="form-control" id="destination-input">
-              </div>
-              <div class="form-group">
-                <label for="first-train-input">First Train Time (HH:mm - military time)</label>
-                <input type="text" class="form-control" id="first-train-input">
-              </div>
-              <div class="form-group">
-                <label for="frequency-input">Frequency (min)</label>
-                <input type="text" class="form-control" id="frequency-input">
-              </div>
-              <button type="submit" class="btn btn-primary" id="add-train-btn">Submit</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <script src="traintime-logic.js"></script>
+    <nav>
+        <div class="navWrapper">
+            <div class="navLeft">
+                <h1>Aris Balomenos</h1>
+            </div>
+            <div class="navRight">
+                <div class="topnav" id="myTopnav">
+                    <a href="index.html">About</a>
+                    <a href="index.html" class="active">Portfolio</a>
+                    <a href="index.html">Contact</a>
+                    <a href="javascript:void(0);" class="icon">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
+    <section>
+            
+        <div class="trainActivity">
+            <h2>Train Activity</h2>
+            <hr>
+            <div class="gameContainer">
+                <div id="wrapper">
+                <div id="userName"></div>
+                <div id="container">
+                    <div id="loginContainer">
+                            <a href="#" id="loginButton"><span>Login</span></a>
+                            <div style="clear:both"></div>
+                            <div id="loginBox">                
+                                <form id="loginForm">
+                                    <fieldset class="body">
+                                        <fieldset>
+                                            <label for="email">Email Address</label>
+                                            <input type="text" name="email" id="email"/>
+                                        </fieldset>
+                                        <fieldset>
+                                            <label for="password">Password</label>
+                                            <input type="password" name="password" id="password"/>
+                                        </fieldset>
+                                        <div class="buttonContainer">
+                                            <input type="submit" class="button" id="login" value="Sign in"/>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="registerContainer">
+                            <a href="#" id="registerButton"><span>Register</span></a>
+                            <div style="clear:both"></div>
+                            <div id="registerBox">                
+                                <form id="registerForm">
+                                    <fieldset class="body">
+                                        <fieldset>
+                                            <label for="emailRegister">Email Address</label>
+                                            <input type="text" name="emailRegister" id="emailRegister"/>
+                                        </fieldset>
+                                        <fieldset>
+                                            <label for="passwordRegister">Password</label>
+                                            <input type="password" class="form-control" name="passwordRegister" id="passwordRegister"/>
+                                        </fieldset>
+                                        <fieldset>
+                                            <label for="cfmPasswordRegister">Confirm Password</label>
+                                            <input type="password" class="form-control" name="cfmPasswordRegister" id="cfmPasswordRegister"/>
+                                            </fieldset>
+                                        <div class="buttonContainer">
+                                            <input type="submit" class="button" id="register" value="Register"/>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="logoutContainer">
+                            <a href="#" id="logoutButton"><span>Logout</span></a>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class = "leftContainer">
+                    <div class ="leftHeader">
+                        <h4>Train Schedule</h4>
+                    </div>
+                    <div class ="rightHeader">
+                        <h4 id="currentTime"></h4>
+                    </div>
+                    <table id="trainSchedule">
+                        <thead>
+                            <tr>
+                                <th scope="col">TRAIN NAME</th>
+                                <th scope="col">DESTINATION</th>
+                                <th scope="col" class="adminStartTime">START TIME</th>
+                                <th scope="col">FREQUENCY (MIN)</th>
+                                <th scope="col">NEXT ARRIVAL</th>
+                                <th scope="col">MINUTES AWAY</th>
+                                <th scope="col" class="adminEdit">EDIT</th>
+                                <th scope="col" class="adminDelete">DELETE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class = "rightContainer">
+                    <br>
+                    <div id="noAdmin">
+                        <h3>Note</h3>
+                        <div id="noAdminContainer">
+                            <p>Only admins can edit Train schedules.</p>
+                            <br>
+                            <p>For testing purposes, use the below credentials.</p>
+                            <br>
+                            <p>Email:</p>
+                            <p>admin@skycomtech.com</p>
+                            <br>
+                            <p>Password:</p>
+                            <p>admin1</p>
+                        </div>
+                    </div>
+                    <div id="addTrains">
+                        <h3>Add Train</h3>
+                        <form id="addTrainsForm">
+                            <div>
+                                <label for="trainName">Train Name</label>
+                                <input type="text" name="trainName" id="trainName">
+                            </div>
+                            <br>
+                            <div>
+                                <label for="trainDestination">Destination</label>
+                                <input type="text" name="trainDestination" id="trainDestination">
+                            </div>
+                            <br>
+                            <div>
+                                <label for="trainFirstTime">Start Time</label>
+                                <input type="text" name="trainFirstTime" id="trainFirstTime" required placeholder="(HH:mm)">
+                            </div>
+                            <br>
+                            <div>
+                                <label for="trainFrequency">Frequency</label>
+                                <input type="text" name="trainFrequency" id="trainFrequency" placeholder="(min)">
+                            </div>
+                            <br>
+                            <div class="buttonContainer">
+                                <button type="submit" class="button" id="addTrain">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="messageBox">
+                    <p>Check your Start Time input!</p>
+                    <p>Needs to be (hh:mm)</p>
+                    <br>
+                    <p>Example: 05:00</p>
+                </div>
+                <div id="errorLogin">
+                    <p>Incorrect Email or Password!</p>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
-
 </html>
